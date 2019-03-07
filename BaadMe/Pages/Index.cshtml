@@ -1,0 +1,55 @@
+﻿@page
+@model IndexModel
+@using System.Data
+@using System.Data.SqlClient
+
+@{
+    ViewData["Title"] = "Hello World";
+    DataTable dt = new DataTable();
+    var error = string.Empty;
+    try
+    {
+        string conString = "server=172.17.0.3,1433;database=test;uid=sa;pwd=yourStrong(!)Password;Trusted_Connection=false;Connect Timeout=500;Pooling=false";
+        DataSet ds = new DataSet();
+        using (var conn = new SqlConnection(conString))
+        {
+            conn.Open();
+            SqlCommand cmd = new SqlCommand("GETUSers", conn);
+            SqlDataAdapter obj = new SqlDataAdapter(cmd);
+            obj.Fill(ds);
+        }
+        dt = ds.Tables[0];
+    }
+
+    catch (Exception ex)
+    {
+        error = ex.ToString();
+    }
+}
+
+
+@if (dt.Rows.Count > 0)
+{
+    <table id="memberlist">
+        <tbody>
+            <tr>
+                <td>FirstName</td>
+                <td>LastName</td>
+                <td>Address</td>
+            </tr>
+            @foreach (DataRow row in dt.Rows)
+            {
+                <tr>
+                    <td>@row["FirstName"]</td>
+                    <td>@row["LastName"]</td>
+                    <td>@row["Address"]</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    @error
+}
+Hello BaadMe
